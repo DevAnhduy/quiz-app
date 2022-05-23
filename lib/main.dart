@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 const questions = [
   {
@@ -23,6 +23,8 @@ const questions = [
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -34,28 +36,24 @@ class _MyAppState extends State<MyApp> {
   int _questionIndex = 0;
 
   void _answerQuestion() {
-    setState(() {
-      _questionIndex = _questionIndex + 1;
-    });
-
-    print(_questionIndex);
+    if (_questionIndex < questions.length) {
+      setState(() {
+        _questionIndex = _questionIndex + 1;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(title: const Text('My First App')),
-          body: Column(
-            children: [
-              Question(
-                questions[_questionIndex]['questionText'] as String,
-              ),
-              ...(questions[_questionIndex]['answers'] as List<String>)
-                  .map((answer) => Answer(_answerQuestion, answer))
-                  .toList(),
-            ],
-          )),
-    );
+        home: Scaffold(
+            appBar: AppBar(title: const Text('My First App')),
+            body: _questionIndex < questions.length
+                ? Quiz(
+                    answerQuestion: _answerQuestion,
+                    questionIndex: _questionIndex,
+                    questions: questions,
+                  )
+                : const Result()));
   }
 }
